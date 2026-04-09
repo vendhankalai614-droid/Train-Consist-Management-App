@@ -1,49 +1,50 @@
-import java.util.*;
-
-class Bogie {
-    String name;
-    int capacity;
-
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-
-    public String toString() {
-        return name + " (" + capacity + " seats)";
-    }
-}
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class trainapp {
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("===========================================");
-        System.out.println("   Train Consist Management App - UC10   ");
+        System.out.println("   Train Consist Management App - UC11   ");
         System.out.println("===========================================\n");
 
-        // List of bogies (reuse example from UC7-UC9)
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 54),
-                new Bogie("First Class", 24),
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 54)
-        );
+        // Prompt for Train ID
+        System.out.print("Enter Train ID (format TRN-1234): ");
+        String trainID = scanner.nextLine();
 
-        // Display bogie list
-        System.out.println("Passenger Bogies:");
-        bogies.forEach(System.out::println);
+        // Prompt for Cargo Code
+        System.out.print("Enter Cargo Code (format PET-AB): ");
+        String cargoCode = scanner.nextLine();
 
-        // Calculate total seating capacity using stream, map, and reduce
-        int totalSeats = bogies.stream()
-                .map(b -> b.capacity)          // Extract capacity
-                .reduce(0, Integer::sum);      // Sum capacities
+        // Define regex patterns
+        String trainIDPattern = "TRN-\\d{4}";
+        String cargoCodePattern = "PET-[A-Z]{2}";
 
-        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats + " seats");
+        // Compile patterns
+        Pattern patternTrainID = Pattern.compile(trainIDPattern);
+        Pattern patternCargoCode = Pattern.compile(cargoCodePattern);
 
-        // Verify original list unchanged
-        System.out.println("\nOriginal Bogie List (unchanged):");
-        bogies.forEach(System.out::println);
+        // Create matcher objects
+        Matcher matcherTrainID = patternTrainID.matcher(trainID);
+        Matcher matcherCargoCode = patternCargoCode.matcher(cargoCode);
+
+        // Validate Train ID
+        if (matcherTrainID.matches()) {
+            System.out.println("Train ID is VALID.");
+        } else {
+            System.out.println("Train ID is INVALID!");
+        }
+
+        // Validate Cargo Code
+        if (matcherCargoCode.matches()) {
+            System.out.println("Cargo Code is VALID.");
+        } else {
+            System.out.println("Cargo Code is INVALID!");
+        }
+
+        scanner.close();
     }
 }
