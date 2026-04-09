@@ -1,74 +1,61 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class Bogie {
-    String name;
+class PassengerBogie {
+    String type;
     int capacity;
 
-    public Bogie(String name, int capacity) {
-        this.name = name;
+    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
+        this.type = type;
         this.capacity = capacity;
     }
 
     @Override
     public String toString() {
-        return name + " (" + capacity + ")";
+        return type + " (" + capacity + ")";
     }
 }
 
 public class trainapp {
-
     public static void main(String[] args) {
         System.out.println("===========================================");
-        System.out.println("   Train Consist Management App - UC13    ");
+        System.out.println("   Train Consist Management App - UC14    ");
         System.out.println("===========================================\n");
 
-        // Prepare a large collection of bogies for benchmarking
-        List<Bogie> bogies = new ArrayList<>();
-        for (int i = 0; i < 100_000; i++) {
-            bogies.add(new Bogie("Sleeper", 72));
-            bogies.add(new Bogie("AC Chair", 56));
-            bogies.add(new Bogie("First Class", 48));
+        // Test creation of bogies
+        try {
+            PassengerBogie sleeper = new PassengerBogie("Sleeper", 72);
+            PassengerBogie acChair = new PassengerBogie("AC Chair", 0); // Invalid
+            PassengerBogie firstClass = new PassengerBogie("First Class", 50);
+
+            System.out.println("Bogies created successfully:");
+            System.out.println(sleeper);
+            System.out.println(acChair);
+            System.out.println(firstClass);
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error creating bogie: " + e.getMessage());
         }
 
-        // -------------------------
-        // Loop-based filtering
-        // -------------------------
-        long loopStart = System.nanoTime();
+        // Multiple valid bogies
+        try {
+            PassengerBogie sleeper1 = new PassengerBogie("Sleeper", 72);
+            PassengerBogie acChair1 = new PassengerBogie("AC Chair", 56);
+            PassengerBogie firstClass1 = new PassengerBogie("First Class", 48);
 
-        List<Bogie> loopFiltered = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.capacity > 60) {
-                loopFiltered.add(b);
-            }
+            System.out.println("\nMultiple valid bogies created:");
+            System.out.println(sleeper1);
+            System.out.println(acChair1);
+            System.out.println(firstClass1);
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error creating bogie: " + e.getMessage());
         }
-
-        long loopEnd = System.nanoTime();
-        long loopDuration = loopEnd - loopStart;
-
-        System.out.println("Loop-based filtering results count: " + loopFiltered.size());
-        System.out.println("Loop-based execution time: " + loopDuration + " ns");
-
-        // -------------------------
-        // Stream-based filtering
-        // -------------------------
-        long streamStart = System.nanoTime();
-
-        List<Bogie> streamFiltered = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-
-        long streamEnd = System.nanoTime();
-        long streamDuration = streamEnd - streamStart;
-
-        System.out.println("\nStream-based filtering results count: " + streamFiltered.size());
-        System.out.println("Stream-based execution time: " + streamDuration + " ns");
-
-        // -------------------------
-        // Consistency check
-        // -------------------------
-        boolean sameResults = loopFiltered.size() == streamFiltered.size();
-        System.out.println("\nDo both methods produce the same results? " + (sameResults ? "✅ Yes" : "❌ No"));
     }
 }
