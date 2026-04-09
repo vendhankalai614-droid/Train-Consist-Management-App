@@ -20,30 +20,33 @@ public class trainapp {
     public static void main(String[] args) {
 
         System.out.println("===========================================");
-        System.out.println("   Train Consist Management App - UC8   ");
+        System.out.println("   Train Consist Management App - UC9   ");
         System.out.println("===========================================\n");
 
-        // Reuse Bogie list (from UC7)
+        // Original Bogie List
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 54));
         bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 54));
 
         // Display original list
         System.out.println("Original Bogie List:");
         System.out.println(bogies);
 
-        // Stream filtering: capacity > 60
-        List<Bogie> highCapacityBogies = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
+        // Grouping by bogie name using Collectors.groupingBy
+        Map<String, List<Bogie>> groupedBogies = bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-        // Display filtered result
-        System.out.println("\nFiltered Bogies (Capacity > 60):");
-        System.out.println(highCapacityBogies);
+        // Display grouped bogies
+        System.out.println("\nGrouped Bogies by Type:");
+        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
 
         // Verify original list unchanged
-        System.out.println("\nOriginal List After Filtering (unchanged):");
+        System.out.println("\nOriginal List After Grouping (unchanged):");
         System.out.println(bogies);
     }
 }
