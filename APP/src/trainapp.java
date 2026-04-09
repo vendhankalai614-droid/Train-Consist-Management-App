@@ -1,33 +1,49 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    public String toString() {
+        return name + " (" + capacity + " seats)";
+    }
+}
 
 public class trainapp {
 
     public static void main(String[] args) {
 
         System.out.println("===========================================");
-        System.out.println("   Train Consist Management App - UC6   ");
+        System.out.println("   Train Consist Management App - UC8   ");
         System.out.println("===========================================\n");
 
-        // Create HashMap (Bogie -> Capacity)
-        HashMap<String, Integer> bogieCapacity = new HashMap<>();
+        // Reuse Bogie list (from UC7)
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 54));
+        bogies.add(new Bogie("First Class", 24));
 
-        // Insert bogie-capacity mapping using put()
-        System.out.println("Adding bogie capacities...\n");
+        // Display original list
+        System.out.println("Original Bogie List:");
+        System.out.println(bogies);
 
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 54);
-        bogieCapacity.put("First Class", 24);
+        // Stream filtering: capacity > 60
+        List<Bogie> highCapacityBogies = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
 
-        // Display all entries using entrySet()
-        System.out.println("Bogie Capacity Details:");
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println("Bogie: " + entry.getKey() +
-                    " | Capacity: " + entry.getValue());
-        }
+        // Display filtered result
+        System.out.println("\nFiltered Bogies (Capacity > 60):");
+        System.out.println(highCapacityBogies);
 
-        // Example: Fast lookup
-        System.out.println("\nChecking capacity of Sleeper...");
-        System.out.println("Sleeper Capacity: " + bogieCapacity.get("Sleeper"));
+        // Verify original list unchanged
+        System.out.println("\nOriginal List After Filtering (unchanged):");
+        System.out.println(bogies);
     }
 }
